@@ -246,69 +246,16 @@ TODO:
 
       indeed, the provisioning process would need to be broken down into 2 distinct sub-steps; fortunately, the 2nd sub-step can be configured not only to use the resources provisioned in the 1st sub-step, but also to keep track of those resources!
 
-      (the entire 2-sub-step process, which makes it possible _also_ for the remote-backend resources to themselves be managed by Terraform, will be demonstrated in the following bulletpoints!)
+      (the entire 2-sub-step process, which makes it possible _also_ for the remote-backend resources to themselves be managed by Terraform, is demonstrated in [./03-basics--basic-terraform-usage/step-1-aws-backend/main.tf](./03-basics--basic-terraform-usage/step-1-aws-backend/main.tf)!)
 
     - (sub-step 1) 
-        ```
-        terraform {
-          # Skip configuring a remote backend,
-          # which will cause Terraform to default to a local backend.
 
-          required_providers {
-            aws = {
-            source  = "hashicorp/aws"
-            version = "~> 3.0"
-            }
-          }
-        }
+      follow the corresponding instructions in the file linked above
 
-        provider "aws" {
-          region = "us-east-1"
-        }
+      (doing that will result both in provisioning the file's specified resources within our AWS account, and in recording those into "the state file")
 
-        resource "aws_s3_bucket" "terraform_state" {
-          bucket        = "s3-bucket-terraform-state-for-my-web-app"
-          force_destroy = true
-          versioning {
-            enabled = true
-          }
+    - (sub-step 2)
 
-          server_side_encryption_configuration {
-            rule {
-              apply_server_side_encryption_by_default {
-                sse_algorithm = "AES256"
-              }
-            }
-          }
-        }
-
-        resource "aws_dynamodb_table" "terraform_locks" {
-          name         = "dynamodb-table-terraform-state-locking"
-          billing_mode = "PAY_PER_REQUEST"
-          # The following is a key attribute,
-          # whose value needs to match exactly in order for this to work.
-          hash_key     = "LockID"
-          attribute {
-            name = "LockID"
-            type = "S"
-          }
-        }
-        ```
-
-        ```
-        terraform apply
-        ```
-        (which causes both to provision the those 2 resources within our AWS account, and to record them into "the state file")
-
-    - (sub-step 2) specify the following within your `main.tf` file:
-        ```
-        terraform {
-          backend "s3" {
-            bucket         = "s3-bucket-terraform-state-for-my-web-app"
-            key            = "tf-infra/terraform.tfstate"
-            region         = "us-east-1"
-            dynamodb_table = "terraform-state-locking"
-            encrypt        = true
-          }
-        }
-        ```
+      specify the following within your `main.tf` file: `aws_s3_bucket.terraform_state.bucket` and `aws_dynamodb_table.terraform_locks.name`
+        
+      follow the corresponding instructions in the file linked above

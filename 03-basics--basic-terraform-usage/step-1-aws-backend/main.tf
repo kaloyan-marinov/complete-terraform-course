@@ -1,6 +1,31 @@
 terraform {
-  # Skip configuring a remote backend,
+  # (sub-step 1)
+  # Without configuring a remote backend,
+  # issue
+  #   ```
+  #   cd 03-basics--basic-terraform-usage/step-1-aws-backend/
+  #
+  #   terraform apply
+  #   ```
   # which will cause Terraform to default to a local backend.
+
+#   # (sub-step 2)
+#   # Uncomment the following block of code,
+#   # and switch from a local backend to an AWS remote backend by re-issuing
+#   #   ```
+#   #   terraform init
+#   #   ```
+#   backend "s3" {
+#     # The value on the next line needs to match the S3-bucket name specified below.
+#     bucket         = "s3-bucket-terraform-state-for-my-web-app"
+#     key            = "tf-infra/terraform.tfstate"
+#     region         = "us-east-1"
+#     # The value on the next line needs to match
+#     # the DynamoDB-table name specified below.
+#     dynamodb_table = "dynamodb-table-terraform-state-locking"
+#     encrypt        = true
+#   }
+
 
   required_providers {
   aws = {
