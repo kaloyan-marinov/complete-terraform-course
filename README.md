@@ -167,7 +167,7 @@ TODO:
     
     - the `.terraform.lock.hcl` file contains information about the specific providers and dependencies that are installed within this workspace
 
-    - in addition, if your Terraform files utilize any "Terraform modules" (which will be covered in detail later in this tutorial), downloads those as well into our working directory
+    - in addition, if your Terraform files utilize any "Terraform modules" (which will be covered in detail later on in this tutorial), downloads those as well into our working directory
 
         ```
         $ tree -a .

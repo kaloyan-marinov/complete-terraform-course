@@ -24,6 +24,11 @@
     "editor.formatOnSave": true
   },
 
+  "[terraform]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+
   // Controls if suggestions should be accepted 'Enter' - in addition to 'Tab'.
   // Helps to avoid ambiguity between inserting new lines or accepting suggestions.
   "editor.acceptSuggestionOnEnter": "off",
