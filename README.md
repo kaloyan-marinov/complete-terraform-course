@@ -364,3 +364,13 @@ TODO:
     you'll see, when it outputs the `plan` to the command line,
     it will mask those [sensitive data]
     )
+
+    examine the files withn the `step-1-examples/` sub-directory in the following order:
+    - `main.tf`
+    - `variables.tf`
+    - `terraform.tfvars` is where I can defined the values for these variables
+      if they're non-sensitive
+    - `terraform-not-used-by-default.tfvars` is similar to the previous one,
+      but needs to be specified via `terraform apply -var-file=...`
+    - `outputs.tf` adds a couple of outputs to this [process],
+      as samples of what you might include
