@@ -224,13 +224,18 @@ resource "aws_lb" "load_balancer" {
 # to operating with credentials in a secure manner.
 # )
 resource "aws_db_instance" "db_instance" {
-  allocated_storage   = 20
-  storage_type        = "standard"
-  engine              = "postgres"
-  engine_version      = "12"
-  instance_class      = "db.t2.micro"
-  name                = "postres-database"
-  username            = "postres-username"
+  allocated_storage = 20
+  storage_type      = "standard"
+  engine            = "postgres"
+  engine_version    = "12"
+  instance_class    = "db.t2.micro"
+  # Using "postres-database" in the next line failed with
+  # "Error creating DB Instance: InvalidParameterName: DBName must
+  # begin with a letter and contain only alphanumeric characters"
+  name = "postres_database"
+  # Using "postres_username" in the next line failed with
+  # "Error creating DB Instance: InvalidParameterValue: Invalid master user name"
+  username            = "postres_username"
   password            = "postres-password"
   skip_final_snapshot = true
 }
