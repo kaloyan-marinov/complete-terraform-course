@@ -22,7 +22,7 @@ IaC:
 - focus of this course
 - _declare_/define your infrastructure within your codebase
 - benefit #1: you know exactly what is provisioned at any given time
-- benefit #2: if you are provisioning multiple environments (such as `staging` and `production`), use the power of programming languages to have multiple copies of the same thing and be confindent that they are deployed identically
+- benefit #2: if you are provisioning multiple environments (such as "staging" and "production"), use the power of programming languages to have multiple copies of the same thing and be confindent that they are deployed identically
 - 15:30 - ...
 
 Categories of IaC tools:
@@ -374,3 +374,13 @@ TODO:
       but needs to be specified via `terraform apply -var-file=...`
     - `outputs.tf` adds a couple of outputs to this [process],
       as samples of what you might include
+      (= you might want to consume those in _either_ another Terraform configuration,
+      _or_ some other piece of our automation)
+
+    examine the files within the `step-2-web-app/` sub-directory in the following order:
+    - `variables.tf`
+    - `outputs.tf`
+    - `main.tf` (at this moment, we can draw the following important conclusion:
+      by using variables in this way, I'll actually be able to, down the line,
+      deploy distinct "staging" and "production" environments
+      simply by configuring different variable values)
