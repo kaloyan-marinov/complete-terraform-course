@@ -259,3 +259,108 @@ TODO:
       specify the following within your `main.tf` file: `aws_s3_bucket.terraform_state.bucket` and `aws_dynamodb_table.terraform_locks.name`
         
       follow the corresponding instructions in the file linked above
+
+# Variables and outputs
+
+[part 04 of tutorial]
+
+1. variable types
+
+    ```
+    # [This should be viewed as an excerpt from a `*.tf` file.]
+
+    # A variable of the following type is accessed via
+    # `var.<name>`
+    variable "intance_type" {
+    description = "ec2 instance type"
+    type        = string
+    default     = "t2.micro"
+    }
+
+    # A variable of the following type is accessed via
+    # `local.<name>`
+    # (Note the singular vs the plural forms!)
+    locals {
+    service_name = "My Service"
+    owner        = "XYZ Corporation"
+    }
+
+    # A variable of the following type is accessed via
+    # [tbd]
+    output "instance_ip_addr" {
+    value = aws_instance.instance.public_ip
+    }
+
+    ```
+
+2. the order of precedence for setting input variables - from highest to lowest precedence:
+
+    - command line `-var` or `-var-file`
+
+    - `*.auto.tfvars` file
+
+    - `terraform.tfvars` file
+
+      (
+      this can be useful
+      if you want to have a different set of values
+      for different "deployment environments/'targets'"
+      [such as "staging", "production", etc.]
+      )
+
+    - `TF_VAR_<name>` environment variables
+
+      (
+      this is sometimes useful in CI environments or other environments,
+      where you would want to change the value based on different attributes
+      )
+
+    - default value in declaration block
+
+    - manual entry during `plan`/`apply`
+
+      (
+      if you don't specify a variable anywhere and there's no default value,
+      running the `terraform plan` command will cause the Terraform CLI to prompt you
+      to put a value in;
+      you generally don't want to be doing it that way,
+      because it makes it very easy to make a typo or have a mistake
+      such that the variables change [across] different runs
+      )
+
+3. types & validation & sensitive data
+
+    types:
+
+    - primitive types: `string`, `number`, `bool`
+    - complex type 1: `list(<TYPE>)`
+    - complex type 2: `set(<TYPE>)`
+    - complex type 3: `map(<TYPE>)`
+    - complex type 4: `object({<ATTR NAME> = <TYPE>, ...})`
+    - complex type 5: `tuple([<TYPE>, ...])`
+
+    validation:
+
+    - type-checking takes placed automatically
+    - you can also write your own validation rules, and have them be enforced
+
+    sensitive data:
+
+    - set the attribute `Sensitive = true` when you are defining a variable,
+      which is responsible for holding sensitive data
+
+    - pass to `terraform apply` with `TF_VAR_<name>`, or `-var` (retrieved from
+      secret manager at runtime; in other words, using the `-var` option allows you
+      to retrieve the value from the AWS Secrets Manager or the HashiCorp Vault,
+      upon issuing your command)
+    
+    - reference an external secrets store (such as the AWS Secret Manager)
+      within your Terraform configuration,
+      and then use Terraform's "output variable" type
+      to pull those into other portions of your config
+
+    (
+    when you have sensitive data stored within an object within Terraform,
+    you'll see, when it outputs the `plan` to the command line,
+    it will mask those [sensitive data]
+    )
