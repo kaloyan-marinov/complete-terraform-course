@@ -1,4 +1,7 @@
 terraform {
+  # The following block assumes that
+  # an S3 bucket and DynamoDB table have already been set up,
+  # as is made possible by `03-basics--basic-terraform-usage/step-1-aws-backend/`.
   backend "s3" {
     bucket         = "s3-bucket-terraform-state-for-my-web-app"
     key            = "04-variables-and-outputs/step-1-examples/terraform.tfstate"
