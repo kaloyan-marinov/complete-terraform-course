@@ -641,3 +641,43 @@ TODO:
 
     - returns outputs
       to make further integrations possible
+
+5. `06-organization-and-modules/`
+
+    `06-organization-and-modules/step-2-1-web-app-module/`
+
+    - you'll ... see [that]
+      we don't have a `terraform.tfvars` file here;
+      we'll define the `terraform.tfvars` file where we actually consume this module
+
+    - `main.tf`
+
+      all it contains is a "base block",
+      in which we specify that we do need that AWS provider
+
+    - `variables.tf`
+
+      I've kept our `variables.tf` file,
+      and added a few here that we can take a look at -
+      including the `environment_name`;
+      this is going to allow us to
+      split on `dev` vs. `staging` vs. `production`
+      (and avoid some naming conflicts, because I'm deploying into a single AWS account)
+
+    - `outputs.tf`
+
+    ---
+
+    - `compute.tf`
+
+    - `database.tf`
+    
+    - `storage.tf`
+
+    ---
+
+    - `networking.tf`
+
+    ---
+
+    - `dns.tf`
