@@ -384,3 +384,202 @@ TODO:
       by using variables in this way, I'll actually be able to, down the line,
       deploy distinct "staging" and "production" environments
       simply by configuring different variable values)
+
+# Additional language features
+
+[part 05 of tutorial]
+
+1. expressions
+
+  - template string
+
+  - arithmetic operators, equality operators, ...
+
+  - conditionals
+
+  - `for` loop
+
+  - etc.
+
+    The most reliable approach to getting to grips with advanced language features
+    is to consult the Terraform documentation when you need to do something specific.
+
+2. functions
+
+  - "math on numbers"
+
+  - date & time functionality
+
+  - hash & cryptographic functions
+
+    (which, for instance, allow you to generate a password on the fly)
+
+3. meta-arguments
+
+  - there's a number of these
+
+  - example of a meta-argument: `depends_on`
+
+    normally, if there's things that need to happen in a certain sequence...
+    if you're, like, provisioning a server
+    and then you need the IP address from that to pass to a firewall rule
+    (or what have you),
+    just by passing those data
+    and saying `ec2_example.output`
+    and putting that into the configuration for the other resource,
+    Terraform - when you run the `apply` or `plan` command -
+    will figure out the sequence of events and the dependency graph there
+
+    there are cases, though,
+    where one resource implicitly depends on another,
+    but there's no direct connection within the config
+
+    an example here, shown on the right, is that
+    here, if my instance needs to be able to access an S3 bucket,
+    I need to have a role policy that can make that happen,
+    but there's no direct connection within my config,
+    and so I can tell Terraform with this `depends_on` key,
+    "Oh, you should make sure to provision this [IAM] role policy
+    before you provision the instance; otherwise it's gonna fail"
+
+    [cf the tutorial for the "example"]
+
+    so this allows me to give some hints
+    to the parsing and the dependency-graph generation
+    to ensure [that] ordering matches what it needs to be
+  
+  - example of a meta-argument: `count`
+
+    allows me to specify[,]
+    if I need multiple of the same configuration/[resource?] provisioned[,]
+    ....
+    I can use this `count` meta-argument, and it will provision multiple copies
+
+    usually,
+    this will be used with, let's say, a module
+    [which will be discussed in a later part of this tutorial],
+    where I have a single block and I want to make multiple copies of it
+
+    for example,
+    the following configuration will provision 4 copies of this instances:
+    ```
+    resource "aws_instance" "server" {
+      # The following statement causes 4 EC2 instances to be created.
+      count = 4
+
+      ami           = "ami-a1b2c3d4"
+      instance_type = "t2.micro"
+
+      tags {
+        Name = "Server ${count.index}"
+      }
+    }
+    ```
+
+    it's very [convenient] to use this
+    if you have multiple necessary resources that are nearly identical
+
+  - example of a meta-argument: `for_each`
+
+    this is kind of like the `count` meta-argument
+    but it gives us much more control over each resource
+
+    here, we're taking an iterable of some kind,
+    and we're using those to create the multiple resources
+
+    for example:
+    ```
+    locals {
+      subnet_ids = toset([
+        "subnet-abcdef",
+        "subnet-012345",
+      ])
+    }
+
+    resource "aws_instance" "server" {
+      for_each = local.subnet_ids
+
+      ami           = "ami-a1b2c3d4"
+      instance_type = "t2.micro"
+      subnet_id     = each.key
+
+      tags = {
+        Name = "server ${each.key}"
+      }
+    }
+    ```
+
+    it allows us to very easily define copies of things
+    while still maintaining the necessary control to individualize them as needed 
+
+  - example of a meta-argument: `lifecycle`
+
+    there are certain things,
+    where we need Terraform to take actions in a specific order
+
+    we can use the `create_before_destroy` [sub-meta-]argument to say,
+    "If we're replacing this server,
+    we want you to provision the new one _before_ you delete the old one";
+    [this] can help with zero downtime deployments
+
+    there are also some time,
+    where - behind the scenes, _after_ you have provisioned a resource -
+    AWS (or whatever service you're using) will add some metadata to that resource;
+    those can be very annoying from a Terraform state perspective,
+    because it looks as though
+    you have a change between your state and the deployed infrastructure,
+    and so you can tell Terraform,
+    "Oh, yes, that tag exists - we don't need to worry about it"
+
+    ```
+    resource "aws_instance" "server" {
+      ami           = "ami-a1b2c3d4"
+      instance_type = "t2.micro"
+
+      lifecycle {
+        create_before_destroy = true
+
+        # Some resources have metadata
+        # modified automatically
+        # outside of Terraform.
+        ignore_changes = [
+          tags
+        ]
+      }
+    }
+    ```
+
+    the other meta-argument `lifecycle` tag [/ sub-meta-argument]
+    that I'll call out here is
+    the `prevent_destroy` tag;
+    this is kind of a safeguard -
+    if you have some piece of your infrastructure that is critical to not delete,
+    you can add this tag,
+    and then anytime
+    if ... the `terraform plan` or `terraform apply` would have deleted that resource,
+    this would throw an error;
+    and so this can help you
+    really lock down some specific core pieces of the infrastructure
+    that you don't want to be deleted
+
+4. provisioners
+
+  - another important concept within Terraform is the concept of a "provisioner"
+
+  - a provisioner allows you to perform some action
+    either locally, or on a remote machine
+  
+  - example 1: pattern/[combination] of
+    Terraform as a provisioning tool
+    and Ansible as a configuration-management tool;
+    once ... you have your server up,
+    you can use "the Ansible provisioner" to then go off
+    and install
+    and modify those servers,
+    etc.
+
+  - exmaple 2 (a more simple example [than example 1]):
+    you could have, let's say, a start-up script
+    that we want to execute after we have provisioned our servers;
+    and so that could be "a file provisioner" with a Bash script stored there
+    that the Terraform configuration could reference
