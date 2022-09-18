@@ -698,19 +698,19 @@ and so we want to take our single config or module, and deploy it multiple times
 and there's 2 main approaches that people use
 when doing this sort of thing:
 
-- a concept called "workspaces";
-  this is how you can use multiple named sections within a single remote backend;
-  we can use the `terraform workspaces` command
-  to create and manage these different "environments" or [, more precisely,] workspaces
-  that live as different "state files" within our backend;
-  and so we could say,
-  "switch to the `development` workspace [and] deploy that"
-  [and/or]
-  "switch to the `staging` workspace [and] deploy that"
+(a) a concept called "workspaces";
+    this is how you can use multiple named sections within a single remote backend;
+    we can use the `terraform workspaces` command
+    to create and manage these different "environments" or [, more precisely,] workspaces
+    that live as different "state files" within our backend;
+    and so we could say,
+    "switch to the `development` workspace [and] deploy that"
+    [and/or]
+    "switch to the `staging` workspace [and] deploy that"
 
-- break things out as different sub-directories within your filesystem[/repository];
-  we can have a `modules` directory (which has ... different modules that we've built);
-  and then we can have [- at the same level in the directory hierarchy! -] ... `development`, `staging`, and `production` sub-directories,
-  [each of which consumes] those modules in different ways
+(b) break things out as different sub-directories within your filesystem[/repository];
+    we can have a `modules` directory (which has ... different modules that we've built);
+    and then we can have [- at the same level in the directory hierarchy! -] ... `development`, `staging`, and `production` sub-directories,
+    [each of which consumes] those modules in different ways
 
 [those] two approaches have pros and cons that [will be listed below]
