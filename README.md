@@ -714,3 +714,45 @@ when doing this sort of thing:
     [each of which consumes] those modules in different ways
 
 [those] two approaches have pros and cons that [will be listed below]
+
+1. Terraform workspaces
+
+   pros:
+
+    - easy to get started with
+
+    - within your Terraform files,
+      you can reference `terraform.workspace` as an expression
+      to, let's say, populate the name of your resource;
+      so you can call your database the `staging-database` or the `production-database`
+
+    - minimizes the code duplication
+      you have between your different environments
+
+   cons:
+
+    - prone to human error
+      
+      (if you're interacting with these things manually,
+      it can be very easy to forget
+      which workspace you happen to have configured;
+      and make a change;
+      and apply it to the wrong environment)
+
+      (if you've automated a lot of this and it's all happening from within a pipeline,
+      that can be less of an issue
+      but it's still something to think about)
+
+    - the state files are all stored within [the] same remote backend
+    
+      (and so permissioning and access to those different environments - you can't really isolate them;
+      so, if someone has access to the `development` space,
+      [that] someone then also generally has access to the `production` space)
+
+      (within the cloud offering that Hashicorp provides,
+      there is some more nuanced configuration there;
+      but if you're a self-managed backend, this can be a challenge)
+    
+    - just by looking at the codebase, you can't tell specifically what's deployed everywhere
+
+2. file structure
