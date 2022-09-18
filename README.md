@@ -681,3 +681,36 @@ TODO:
     ---
 
     - `dns.tf`
+
+# Managing multiple environments
+
+[part 07 of tutorial]
+
+[the] example that we have been building [and re-building in the different parts of this tutorial] consists of different components,
+and we've defined those as a Terraform configuration
+that we can deploy
+
+but now, in addition to a `production` environment, we want a `staging` environment;
+we want to have them be very similar so that we can be confident - as we make changes, we can test them out in `staging` and see how it goes;
+we also may want a `development` environment that we're deploying to all the time, rapidly changing, testing things
+
+and so we want to take our single config or module, and deploy it multiple times;
+and there's 2 main approaches that people use
+when doing this sort of thing:
+
+- a concept called "workspaces";
+  this is how you can use multiple named sections within a single remote backend;
+  we can use the `terraform workspaces` command
+  to create and manage these different "environments" or [, more precisely,] workspaces
+  that live as different "state files" within our backend;
+  and so we could say,
+  "switch to the `development` workspace [and] deploy that"
+  [and/or]
+  "switch to the `staging` workspace [and] deploy that"
+
+- break things out as different sub-directories within your filesystem[/repository];
+  we can have a `modules` directory (which has ... different modules that we've built);
+  and then we can have [- at the same level in the directory hierarchy! -] ... `development`, `staging`, and `production` sub-directories,
+  [each of which consumes] those modules in different ways
+
+[those] two approaches have pros and cons that [will be listed below]
