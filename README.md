@@ -583,3 +583,61 @@ TODO:
       that we want to execute after we have provisioned our servers;
       and so that could be "a file provisioner" with a Bash script stored there
       that the Terraform configuration could reference
+
+# Organization and modules
+
+[part 06 of tutorial]
+
+1. what is a module?
+
+    - a _module_ is a container for multiple resources
+      (defined within our Terraform configuration) that are used together
+
+    - a module consists of
+      a collection of `.tf` and/or `.tf.json` files kept together in a directory
+
+    - modules are
+      the main way to package and re-use resource configuration with Terraform
+      (re-use them across projects;
+      re-use them across environments;
+
+      or share them with third parties)
+
+2. types of modules
+
+    - root module: default module containing all `.tf` files in the main working directory
+
+    - child module: a separate ... module referred to from a `.tf` file (e.g. from our root module)
+
+    - these modules can come from a variety of sources:
+      if they're all in the same filesystem, we can have local paths
+      (e.g. I can have a `directory-a` and a `directory-b`,
+      and I can reference one from the other);
+      these also can live in "the Terraform Registry";
+      etc.
+
+3. inputs + meta-arguments
+
+    - in previous parts of this tutorial, we looked at input variables
+      and how they can be used when we're issuing our commands;
+      those were for the root module;
+      but each child module can also be passed inputs in a similar fashion;
+      so we can specify
+      whatever the developer of the module has exposed as an input variable
+
+    - we can also then use the meta-arguments that we talked about before
+
+4. what makes a good module?
+
+    - raises the level of abstraction, as compared to the base resource types
+
+    - groups resources in a logical fashion/grouping
+
+    - allows necessary customization
+      and enables composition
+      by exposing input variables
+    
+    - provides useful defaults
+
+    - returns outputs
+      to make further integrations possible
