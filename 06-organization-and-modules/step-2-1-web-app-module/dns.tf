@@ -4,7 +4,7 @@
 # }
 
 # data "aws_route53_zone" "primary" {
-#   count = var.create_dns_zone ? 1 : 0
+#   count = var.create_dns_zone ? 0 : 1
 #   name  = var.domain
 # }
 
