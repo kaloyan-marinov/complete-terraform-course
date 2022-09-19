@@ -756,3 +756,56 @@ when doing this sort of thing:
     - just by looking at the codebase, you can't tell specifically what's deployed everywhere
 
 2. file structure
+
+   pros:
+
+    - can isolate the backends,
+      i.e. can have one backend configuration for `production`,
+      another one for `staging`,
+      and yet another one for `development`
+
+      - improved security
+        (= we can handle the permissions for those backends differently)
+      
+      - decreased potential for human error
+        (= it is less likely for you to think you're operating in one Terraform workspace
+        while[/when] you're actually working in another)
+
+    - looking at the codebase, it fully represents the deployed state
+
+   cons:
+  
+    - `terraform apply` needs to be issued multiple times to provision environments
+    
+    - more code duplication
+      (but can be minimized with modules!)
+    
+   [?!]depending on how complex our infrastructure is,
+   we probably want to start separating things out into
+   not just having a single massive Terraform config for all of our infrastructure[?!];
+   as your organization starts to grow and your infrastructure becomes more complex,
+   you probably want to break things out
+   into logical component groups
+   rather than having everything bundled into one section
+
+    - isolate things that change frequently from those which don't (e.g. `compute` from `networking`)
+
+    there is also the ability for us to reference state
+    from a module or a configuration,
+    which is completely separate from our current configuration -
+    using `terraform_remote_state`
+
+3. Terragrunt
+
+    - a tool by gruntwork.io
+
+    - meta-tooling that can be applied on top of Terraform
+
+    - helps manage some of the complexity
+      that comes with breaking things out into a file structure:
+      
+      (a) keeping our configurations (= Terraform code) DRY;
+
+      (b) executing commands across multiple TF configs
+
+      (c) working with multiple cloud accounts
