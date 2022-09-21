@@ -772,6 +772,11 @@ when doing this sort of thing:
         while[/when] you're actually working in another)
 
     - looking at the codebase, it fully represents the deployed state
+      (= I can very clearly look at my directory ... structure,
+      and ... see what environments I [can] have deployed
+      and how my configuration maps onto those
+      = it's much easier to look at the codebase
+      and reason about the actual infrastructure [environments that] we [can] have deployed)
 
    cons:
   
