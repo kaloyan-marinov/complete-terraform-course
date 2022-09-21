@@ -848,3 +848,32 @@ when doing this sort of thing:
    (I didn't want to go through the set-up of an additional provider here,
    but just know that that's how you would handle it
    if you wanted to fully automate setting up that process."
+
+5. file structure: demo
+   (of how to use a directory layout without our filesystem
+   to organize the different environments)
+
+   the `1-global/` sub-directory is for anything that is shared across the multiple environments
+
+   (if `07-managing-multiple-environments/option-2-file-structure/1-global/main.tf`
+   actually provisioned some resources,
+   then the first step for deploying this would be going into that sub-directory,
+   and then issuing `terraform init` and `terraform apply`)
+
+   ```
+   cd 07-managing-multiple-environments/option-2-file-structure/2-production/
+   
+   terraform init
+
+   terraform apply \
+       -var="db_pass=1234abcd"
+   ```
+
+   ```
+   cd 07-managing-multiple-environments/option-2-file-structure/3-staging/
+   
+   terraform init
+
+   terraform apply \
+       -var="db_pass=5678efgh"
+   ```
