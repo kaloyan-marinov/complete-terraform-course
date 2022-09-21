@@ -39,7 +39,6 @@ module "web_app" {
   # bucket_name = "1-s3-bucket--07-managing-multiple-environments--option-1-workspaces-${local.environment_name}"
   bucket_name = "07-managing-multiple-environments--optn-1-workspaces-${local.environment_name}"
   # domain = "xyz-corporation.com"
-  # app_name         = "web-app-1"  # Did this perhaps get forgotten in the tutorial?
   environment_name = local.environment_name
   instance_type    = "t2.small"
   # create_dns_zone = terraform.workspace == "production" ? true : false
