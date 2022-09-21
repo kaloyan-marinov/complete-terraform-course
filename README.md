@@ -809,3 +809,42 @@ when doing this sort of thing:
       (b) executing commands across multiple TF configs
 
       (c) working with multiple cloud accounts
+
+4. Terraform workspaces: demo
+
+   ```
+   terraform init
+
+   terraform workspace list
+
+   terraform workspace new production
+   terraform workspace list
+   terraform apply \
+      -var="db_pass=1234abcd"
+
+   terraform workspace new staging
+   terraform workspace list
+   terraform apply \
+      -var="db_pass=5678efgh"
+
+   terraform destroy \
+      -var="db_pass=not-5678efgh"
+   
+   terraform workspace select production
+   terraform workspace list
+   terraform destroy \
+      -var="db_pass=not-1234abcd"
+   ```
+
+   01:48:39
+   = "Now, I just updated those nameservers again.
+   If I were using this set-up in a true(r) production environment,
+   I would want to automate the setting of those nameservers.
+   And there is a provider for Google Domains, so I could
+   either continue to host the DNS within Amazon's Route53
+   and continue to update these name servers automatically[/manually(?)],
+   or I could just use Terraform to set A records directly on my Google Domains account
+   (by utilizing the `google_dns_record_set` provider).
+   (I didn't want to go through the set-up of an additional provider here,
+   but just know that that's how you would handle it
+   if you wanted to fully automate setting up that process."
