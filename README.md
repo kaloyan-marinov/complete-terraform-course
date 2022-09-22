@@ -882,3 +882,154 @@ when doing this sort of thing:
    terraform apply \
        -var="db_pass=5678efgh"
    ```
+
+# Testing Terraform code
+
+[part 08 of tutorial]
+
+1. introduction
+
+   a concept that is fairly new to the infrastructure [or IaC](?) world
+   is how we can use testing - like we can use with software development! -
+   to ensure that our IaC configurations are high-quality
+   and continuing to perform how we want them to
+
+   why is this useful?
+
+   to prevent "code rot"
+
+   but what is "code rot"?
+   "code rot", in general, refers to this concept that,
+   over time, things change about your software system(s)
+   and, if you don't test and use code, it will often time degrade over time
+
+2. "code rot"
+   in the (more specific) context of Terraform and infrastructure
+
+   - out-of-band changes
+
+     if I deploy something with Terraform,
+     and then my colleague goes in and changes something via the UI,
+     that is now a misconfiguration that could be a challenge
+  
+   - unpinned versions
+
+     if we forgot to specific a specific version of our provider
+     and it just used the latest one,
+     that could cause a conflict
+     _if_ that provider was updated in the background
+  
+   - deprecated dependencies
+
+     we are depending on an external module
+     or a specific resource type within the cloud provider,
+     and that was then deprecated
+  
+   - unapplied changes
+
+     if we have made a change to our infrastructure config or a our Terraform config
+     but that never got applied to a specific environment;
+     let's say we rolled it out to `staging`
+     but we forgot - because we didn't automate it! -
+     ... to actually apply that to `production`,
+     so that unapplied change now is a conflict
+     between our config file and our state file
+
+3. static checks
+
+   (a) some are built into the `terraform` binary itself
+
+      - `terraform fmt -check` and `terraform fmt`
+
+        (
+        give us an opinionated formatting,
+        making sure that everyone adheres to the same style
+        )
+
+      - `terraform validate`
+
+        (
+        does a check to see
+        whether all of my configurations are using all of the required input variables,
+        or whether a number is passed to a boolean variable,
+        etc.
+        )
+
+      - `terraform plan`
+
+        (
+        can be a great way to check
+        if something has changed out-of-band;
+        so, if I run a `terraform plan` command and it says "0 changes required",
+        that means (we're good to go i.e.) our config has not been modified;
+        on the flipside, if I run a `terraform plan` [command]
+        and it says "We need to ... change these 4 things",
+        that means something happened -
+        unless I changed my config and I wanted those changes! -
+        ... if I haven't changed my config, that means something happened out-of-band;
+        often, a good check is
+        to run a `terraform plan` command once a day or once a week,
+        and if it says that there's changes need
+        but there's been no change to the config,
+        then that indicates that something can be wrong
+        )
+
+      - custom validation rules
+
+   (b) there's also some third-party tools
+       (that we can use to do some additional checks against our codebase)
+
+      - `tflint`
+
+      - some scanning tools,
+        which are focused on the security aspects of your Terraform config:
+        `checkov`, `tfsec`, `terrascan`, `terraform-compliance`, `snyk`
+
+      - the managed cloud offering [from Hashicorp] offers a tool called Terraform Sentinel,
+        which is enterprise-only ...,
+        but it can help you to validate some security configurations
+        and then force some rules on your codebase
+        ... (which can be great from a security and compliance perspective
+        if you need that sort of level of guarantees about the configurations
+        that you're managing)
+
+4. manual testing
+
+   you can always, as you might expect, do manual testing of things
+
+   this would just be following that similar lifecycle of commands
+   that we talked about many times throughout the course:
+    - `terraform init`
+    - `terraform plan`
+    - `terraform apply`
+    - `terraform destroy`
+
+   so this can give you a sense of,
+   "Hey, does this configuration produce a working set of infrastructure?"
+
+   and that's great,
+   but we would much prefer for this type of testing to be automated;
+   so we can take that type of manual testing
+   and just automate all of those steps
+   (with a shell script or whatever other technique we want)
+
+4. automated testing
+
+   - with Bash
+
+      for example, we could write a script like the one in
+
+      we coud ... run this script in CI
+  
+   - with Terratest
+
+      we probably don't want to just have a hacky shell script as our end-all-be-all
+
+      and so, there are tools
+      that allow us to define tests within actual programming languages,
+      to test our infrastructure
+      and make more complex assertions about what we expect to happen
+
+      so I've taken that same test that we had before
+      and now implemented it in Go using a tool called Terratest;
+      cf the following file: 
