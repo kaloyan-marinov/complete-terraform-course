@@ -1018,6 +1018,7 @@ when doing this sort of thing:
    - with Bash
 
       for example, we could write a script like the one in
+      `08-testing--testing-terraform-code/4-tests/2-bash/hello_world_test.sh`
 
       we coud ... run this script in CI
   
@@ -1033,3 +1034,19 @@ when doing this sort of thing:
       so I've taken that same test that we had before
       and now implemented it in Go using a tool called Terratest;
       cf the following file: 
+      `08-testing--testing-terraform-code/4-tests/3-terratest/hello_world_test.go`
+
+5. another powerful test that I like to add to any Terraform project is
+   to periodically execute a `terraform plan` command within your CI/CD system
+
+   what that's going to do is:
+   if there have been any changes (either via the CLI or via the UI)
+   outside of what Terraform knows about,
+   you can set it up so that
+   (a) it will fail the test
+   and (b) that will notify you,
+   so that you can go check,
+   "Hey, what's different about my deployed infrastructure from my IaC configuration?"
+
+   and, if it was by accident, I want to revert those changes;
+   if it was on purpose, I want to bring those changes back into the configuration;
