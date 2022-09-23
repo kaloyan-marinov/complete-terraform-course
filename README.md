@@ -1050,3 +1050,142 @@ when doing this sort of thing:
 
    and, if it was by accident, I want to revert those changes;
    if it was on purpose, I want to bring those changes back into the configuration;
+
+# Developer workflows
+
+[part 09 of tutorial]
+
+1. overview
+
+   at this point, we understand:
+
+    - how Terraform works
+
+    - how to use the Hashicorp Configuration Language (HCL)
+
+    - how we should be organizing and structuring our code with these modules
+
+    - how to manage multiple environments
+
+    - how to test our code
+  
+   [in] this final portion,
+   I want to kind of bring it all together
+   and help you to understand what different workflows would look like
+   both from a developer perspective
+   [and] from [the perspective of] automating the operations of using a tool like Terraform
+   to ensure that
+   we have reliable infrastructure and can update it accordingly
+
+2. general workflow
+   (that a developer, who is using Terraform, is gonna go through)
+
+   - write and update that code
+
+   - run those changes locally
+     (for a development environment)
+     (= maybe you have a development environment that you can change without having any issues)
+  
+   - (once you're satisfied that your config matches what you want it to, you would then) create a pull request _and_ trigger a run of tests from within our Continuous Integration system (e.g. GitHub Actions)
+
+     so that could run, maybe that Terratest ... that I had shown before;
+     spin up a copy of the infrastructure;
+     make sure things are still working as they are expected to;
+     if they are, give us a green check mark and tear that infrastructure down;
+
+     (
+     and that gives us confidence that,
+     when we do end up deploying this to `production`,
+     we're not going to run into any issues
+     )
+
+   - if[/when] we merge that pull request to the `main` branch,
+     we could have an automated pipeline
+     (within GitHub actions again = our whatever-Continuous-Integration-Continuous-Delivery-pipelining-tool-of-choice)
+     and deploy those changes to `staging` automatically
+
+     (
+     rather than have a developer issue a `terraform apply` command locally on their laptop,
+     we want those things to be automated
+     so that we can avoid the potential for human error
+     )
+    
+    - maybe[?] on the next release
+      so that, let's say, we tag a release within GitHub,
+      that could kick off a separate pipeline,
+      which now takes those same changes that were made on `main`
+      and deployes them to our `production` [environment]
+
+   ---
+
+   so, this is kind of the general workflow that I would recommend
+
+   ---
+
+   I would also recommend
+   having a testing schedule on a Cron ...
+   so periodically running just a `terraform plan`
+   from within your Continuous Integration tool;
+   and, if that plan shows any changes from the deployed state to the current ... config on your `main` branch, to raise an error;
+   and so, that could be an easy check to see if something was changed out-of-band, and find that very quickly,
+   and [either] make sure that gets reverted,
+   or ... integrated back into the config if it was a purposeful change
+
+3. (there's also an important consideration here of working with) multiple accounts [within AWS] [= "projects" withing GCP]
+
+   often times, it is beneficial from a security perspective to have
+       one account for `staging`,
+       one account for `production`,
+       one account for `development`,
+       etc.
+
+   pros:
+
+    - having these resources deployed into different accounts
+      makes it much easier to manage the level of granularity for access "that you need to"[?] within IAM policies,
+      to enforce the controls for the different environments -
+      "both from the infrastructure that's deployed,
+      as well as for these Terraform backends"
+    
+    - we want to isolate the environments to protect against potential issues
+
+      isolate environments to "protect minimize" blast radius
+      
+      (
+      so, if you make a mistake and blow up the `development` environment,
+      that doesn't impact `staging` and `production`
+      )
+
+    - it also helps us avoid naming conflicts [for things]
+
+      reduce naming conflicts for resources
+
+      (
+      so, if we're deploying everything into one account,
+      you often times cannot have the same name for an individual resource within that account
+
+      and so you end up having to add all these prefixes or postfixes -
+      so maybe you say `database-production`, `database-staging` -
+      ... those changes now need to be templated across any place that's used
+
+      and that can just be annoying to deal with
+      )
+
+      if you're working with a multi-account setup,
+      you can just name the database whatever the application name is,
+      and that can be identical across all those different accounts
+
+      and that allows you ... to avoid having to template that in in as many places,
+      which can be nice
+
+   cons:
+
+    - it does add some complexity to your TF config
+      (but, in general, I think it is still worth it to think about multi-account ... setups wherever possible + tooling can help)
+  
+   as you need to start tightening up your security,
+   this is going to be an important way to go about doing that
+
+   if you want to do a deep dive on how this would look
+   and how you can go about implementing this within your own project:
+   https://www.hashicorp.com/resources/going-multi-account-with-terraform-on-aws
