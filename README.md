@@ -1189,3 +1189,72 @@ when doing this sort of thing:
    if you want to do a deep dive on how this would look
    and how you can go about implementing this within your own project:
    https://www.hashicorp.com/resources/going-multi-account-with-terraform-on-aws
+
+4. a couple of 3rd-party tools, that are from a company called Gruntwork, that make working with Terraform much nicer
+
+   - `gruntwork-io/terragrunt`
+
+     - minimizes code repetition
+
+     - [reduces the tedium required to achieve] multi-account separation (improved security/isolation)
+  
+   - `gruntwork-io/cloud-nuke`
+
+     - allows you to very easily clean up a bunch of reasources
+  
+   - `Makefile`s (or shell scripts)
+
+     - prevent human error
+
+5. Continuous Integration / Continuous Deployment
+
+   - GitHub Actions
+
+   - CircleCI
+
+   - GitLab
+
+   - Atlantis
+     (is kind of a Terraform-specific one)
+
+6. Potential gotchas with Terraform
+
+   - name changes when refactoring
+
+     can lead Terraform to think,
+     "Oh, they want to delete this resource, and create a new one"
+  
+   - sensitive data in Terraform state files
+
+     your Terraform state files do have sensitive data in them,
+     so be careful in making sure to encrypt and manage permissions accordingly
+  
+   - cloud timeouts
+
+     Terraform sometimes has timeouts
+
+     usually, if you just re-issue the `terraform apply` command, it will fix that,
+     but they can be a little challenging
+  
+   - naming conflicts
+
+   - forgetting to destroy your test infrastructure
+
+   - uni-directional version upgrades
+
+     if you have a large team,
+     you want to make sure everyone is using the same version of Terraform on their local system,
+     as well as matching that version in your CI/CD system
+  
+   - multiple ways to accomplish the same configuration
+
+   - there's some parameters within a given resource that are immutable
+
+   - out-of-band changes
+
+     making changes out of "the normal Terraform sequence of events"
+
+     that is something that you just want to avoid whenever possible
+
+     your team needs to be bought into Terraform
+     as _the only_ means of deploying this infrastructure
