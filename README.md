@@ -1258,3 +1258,9 @@ when doing this sort of thing:
 
      your team needs to be bought into Terraform
      as _the only_ means of deploying this infrastructure
+
+7. implementation of the described workflow[s]
+   with all the automation
+   within GitHub Actions
+
+   cf. `.github/workflows/terraform.yml`
