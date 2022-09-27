@@ -41,7 +41,7 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         # Route 53 zone must already exist for this to succeed!
-        run: terraform plan -var db_pass=${{ secrets.DB_PASS }} -no-color
+        run: terraform plan -var db_pass=${{secrets.DB_PASS }} -no-color
         continue-on-error: true  # in order for next step to pull current step's results, and display those within "the action interface"
 
       - uses: actions/github-script@0.9.0
@@ -102,11 +102,11 @@ jobs:
 
       - name: Terraform Apply Staging
         if: steps.check-tag.outputs.environment == 'staging' && github.event_name == 'push'
-        run: terraform apply -var db_pass=${{ secrets.DB_PASS }} -auto-approve
+        run: terraform apply -var db_pass=${{secrets.DB_PASS }} -auto-approve
 
       - name: Terraform Apply Production
         if: steps.check-tag.outputs.environment == 'production' && github.event_name == 'release'
         working-directory: 07-managing-multiple-environments/option-2-file-structure/2-production
         run: |
           terraform init
-          terraform apply -var db_pass=${{ secrets.DB_PASS }} -auto-approve
+          terraform apply -var db_pass=${{secrets.DB_PASS }} -auto-approve
