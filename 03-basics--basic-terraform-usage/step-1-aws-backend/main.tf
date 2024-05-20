@@ -7,7 +7,12 @@ terraform {
   #
   #   terraform apply
   #   ```
-  # which will cause Terraform to default to a local backend.
+  # which will cause
+  # (a) Terraform to default to a local backend,
+  # (b) the AWS resources declared below
+  #     to be provisioned within the authenticated AWS account
+  #     and
+  #     to be recorded within the local Terraform state file.
 
 #   # (sub-step 2)
 #   # Uncomment the following block of code,
@@ -28,9 +33,9 @@ terraform {
 
 
   required_providers {
-  aws = {
-    source  = "hashicorp/aws"
-    version = "~> 3.0"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
     }
   }
 }

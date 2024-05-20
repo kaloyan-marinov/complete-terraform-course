@@ -60,6 +60,7 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 # The `data` block is used to reference an existing resource within AWS.
+# (An alternative would be to configure a new VPC for this example.)
 data "aws_vpc" "default_vpc" {
   default = true
 }
@@ -69,6 +70,8 @@ data "aws_subnet_ids" "default_subnet" {
   vpc_id = data.aws_vpc.default_vpc.id
 }
 
+# The following resource is needed in order to enable inbound traffic
+# (to the `aws_instance`s declared above).
 resource "aws_security_group" "instances" {
   name = "instance-security-group"
 }
