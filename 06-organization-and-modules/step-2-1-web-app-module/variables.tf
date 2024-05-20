@@ -21,13 +21,13 @@ variable "environment_name" {
 # EC2 variables
 
 variable "ami" {
-  description = "Amazon machine image to use for ec2 instance"
+  description = "Amazon machine image to use for EC2 instance"
   type        = string
   default     = "ami-011899242bb902164" # Ubuntu 20.04 LTS // us-east-1
 }
 
 variable "instance_type" {
-  description = "ec2 instance type"
+  description = "EC2 instance type"
   type        = string
   default     = "t2.micro"
 }
@@ -35,7 +35,7 @@ variable "instance_type" {
 # S3 variables
 
 variable "bucket_name" {
-  description = "name of s3 bucket for app data"
+  description = "Name of S3 bucket for the application to store data in"
   type        = string
 }
 
@@ -55,7 +55,7 @@ variable "bucket_name" {
 # RDS variables
 
 variable "db_name" {
-  description = "name of DB"
+  description = "Name of DB"
   type        = string
 }
 

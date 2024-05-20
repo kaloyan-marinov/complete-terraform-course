@@ -8,7 +8,7 @@ terraform {
   # as is made possible by `03-basics--basic-terraform-usage/step-1-aws-backend/`.
   backend "s3" {
     bucket         = "s3-bucket-terraform-state-for-my-web-app"
-    key            = "06-organization-and-modules/step-2-1-web-app-module/terraform.tfstate"
+    key            = "06-organization-and-modules/step-2-2-web-app/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "dynamodb-table-terraform-state-locking"
     encrypt        = true

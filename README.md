@@ -528,29 +528,62 @@ TODO:
 
     - example of a meta-argument: `depends_on`
 
-      normally, if there's things that need to happen in a certain sequence...
-      if you're, like, provisioning a server
+      normally, if there [are] things that need to happen in a certain sequence...
+      if you're ... provisioning a server
       and then you need the IP address from that to pass to a firewall rule
       (or what have you),
       just by passing those data
       and saying `ec2_example.output`
       and putting that into the configuration for the other resource,
-      Terraform - when you run the `apply` or `plan` command -
+      Terraform - when you run the `plan` or `apply` command -
       will figure out the sequence of events and the dependency graph there
 
       there are cases, though,
       where one resource implicitly depends on another,
-      but there's no direct connection within the config
+      but there's no direct connection within the [Terraform] configuration
 
-      an example here, shown on the right, is that
-      here, if my instance needs to be able to access an S3 bucket,
-      I need to have a role policy that can make that happen,
-      but there's no direct connection within my config,
-      and so I can tell Terraform with this `depends_on` key,
-      "Oh, you should make sure to provision this [IAM] role policy
-      before you provision the instance; otherwise it's gonna fail"
+      an example [of such a case] (shown [below]) is that
+      ... if [software on an] instance needs to be able to access an S3 bucket,
+      ... a[n IAM] role policy that can make that happen [needs to have been provisioned];
+      [utilizing the `depends_on` meta-argument in the Terraform configuration]
+      makes it possible to tell Terraform
+      "to provision this [IAM] role policy
+      before [it provisions] the instance":
 
-      [cf the tutorial for the "example"]
+      ```
+      resource "aws_iam_role" "example" {
+        name = "example"
+        assume_role_policy = "..."
+      }
+
+      resource "aws_iam_instance_profile" "example" {
+        role = aws_iam_role.example.name
+      }
+
+      resource "aws_iam_role_policy" "example" {
+        name = "example"
+        role = aws_iam_role.example.name
+        policy = jsonencode({
+          "Statement" = [{
+            "Action" = "s3:*",
+            "Effect" = "Allow",
+          }],
+        })
+      }
+
+
+
+      resource "aws_instance" "example" {
+        ami = "ami-abbcccdddd"
+        instance_type = "t2.micro"
+
+        iam_instance_profile = aws_iam_instance_profile.example
+
+        depends_on = [
+          aws_iam_role_policy.example,
+        ]
+      }
+      ```
 
       so this allows me to give some hints
       to the parsing and the dependency-graph generation
@@ -559,12 +592,12 @@ TODO:
     - example of a meta-argument: `count`
 
       allows me to specify[,]
-      if I need multiple of the same configuration/[resource?] provisioned[,]
+      if I need multiple of the same [resource] provisioned[,]
       ....
       I can use this `count` meta-argument, and it will provision multiple copies
 
       usually,
-      this will be used with, let's say, a module
+      this will be used with ... a module
       [which will be discussed in a later part of this tutorial],
       where I have a single block and I want to make multiple copies of it
 
@@ -628,11 +661,11 @@ TODO:
       we can use the `create_before_destroy` [sub-meta-]argument to say,
       "If we're replacing this server,
       we want you to provision the new one _before_ you delete the old one";
-      [this] can help with zero downtime deployments
+      [this] can help [guarantee] zero[-]downtime deployments
 
-      there are also some time,
+      there are also some times,
       where - behind the scenes, _after_ you have provisioned a resource -
-      AWS (or whatever service you're using) will add some metadata to that resource;
+      AWS (or whatever [cloud provider] you're using) will add some metadata to that resource;
       those can be very annoying from a Terraform state perspective,
       because it looks as though
       you have a change between your state and the deployed infrastructure,
@@ -658,15 +691,18 @@ TODO:
       ```
 
       the other meta-argument `lifecycle` tag [/ sub-meta-argument]
-      that I'll call out here is
+      that [we'll mention] here is
       the `prevent_destroy` tag;
       this is kind of a safeguard -
-      if you have some piece of your infrastructure that is critical to not delete,
+      if you have some [critical] piece(s) of your infrastructure
+      that [you don't want to get deleted],
       you can add this tag,
       and then anytime
       if ... the `terraform plan` or `terraform apply` would have deleted that resource,
-      this would throw an error;
-      and so this can help you
+      [the presence of that tag] would throw an error;
+
+      in summary,
+      [using that tag] can help you
       really lock down some specific core pieces of the infrastructure
       that you don't want to be deleted
 
@@ -708,7 +744,6 @@ TODO:
       the main way to package and re-use resource configuration with Terraform
       (re-use them across projects;
       re-use them across environments;
-
       or share them with third parties)
 
 2. types of modules
