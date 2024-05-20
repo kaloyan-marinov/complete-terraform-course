@@ -371,23 +371,23 @@ TODO:
     # A variable of the following type is accessed via
     # `var.<name>`
     variable "intance_type" {
-    description = "ec2 instance type"
-    type        = string
-    default     = "t2.micro"
+      description = "ec2 instance type"
+      type        = string
+      default     = "t2.micro"
     }
 
     # A variable of the following type is accessed via
     # `local.<name>`
     # (Note the singular vs the plural forms!)
     locals {
-    service_name = "My Service"
-    owner        = "XYZ Corporation"
+      service_name = "My Service"
+      owner        = "XYZ Corporation"
     }
 
     # A variable of the following type is accessed via
     # [tbd]
     output "instance_ip_addr" {
-    value = aws_instance.instance.public_ip
+      value = aws_instance.instance.public_ip
     }
 
     ```
@@ -440,16 +440,16 @@ TODO:
 
     validation:
 
-    - type-checking takes placed automatically
+    - type-checking takes place automatically
     - you can also write your own validation rules, and have them be enforced
 
     sensitive data:
 
-    - set the attribute `Sensitive = true` when you are defining a variable,
+    - set the attribute `sensitive = true` when you are defining a variable,
       which is responsible for holding sensitive data
 
     - pass to `terraform apply` with `TF_VAR_<name>`, or `-var` (retrieved from
-      secret manager at runtime; in other words, using the `-var` option allows you
+      a "secret manager" at runtime; in other words, using the `-var` option allows you
       to retrieve the value from the AWS Secrets Manager or the HashiCorp Vault,
       upon issuing your command)
     
@@ -474,7 +474,7 @@ TODO:
     - `outputs.tf` adds a couple of outputs to this [process],
       as samples of what you might include
       (= you might want to consume those in _either_ another Terraform configuration,
-      _or_ some other piece of our automation)
+      _or_ some other piece of [your] automation)
 
     examine the files within the `step-2-web-app/` sub-directory in the following order:
     - `variables.tf`
