@@ -339,10 +339,10 @@ TODO:
       not only to use the resources provisioned in the 1st sub-step,
       but also to keep track of those resources!
 
-      (the entire 2-sub-step process,
+      (the sub-steps of the above-mentioned process,
       which makes it possible _also_ for the remote-backend resources
       to themselves be managed by Terraform,
-      is demonstrated in [./03-basics--basic-terraform-usage/step-1-aws-backend/main.tf](./03-basics--basic-terraform-usage/step-1-aws-backend/main.tf) !)
+      are demonstrated in [./03-basics--basic-terraform-usage/step-1-aws-backend/main.tf](./03-basics--basic-terraform-usage/step-1-aws-backend/main.tf) !)
 
     - (sub-step 1) 
 
@@ -358,6 +358,15 @@ TODO:
       `aws_s3_bucket.terraform_state.bucket` and `aws_dynamodb_table.terraform_locks.name`
         
       follow the corresponding instructions in the file linked above
+
+6. Be advised that
+   [./03-basics--basic-terraform-usage/step-2-web-app/main-but-better-organized.tf](./03-basics--basic-terraform-usage/step-2-web-app/main-but-better-organized.tf
+   )
+   is nothing more than a better-organized equivalent of
+   [./03-basics--basic-terraform-usage/step-2-web-app/main.tf](./03-basics--basic-terraform-usage/step-2-web-app/main.tf
+   );
+   however, there is little need to run "the usual `terraform` workflow"
+   upon the better-organized configuration file
 
 # Variables and outputs
 
